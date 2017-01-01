@@ -1,0 +1,8 @@
+[flake8]
+exclude =
+    build,
+    .git,
+    .tox,
+    __pycache__,
+    ./manage.py,
+max-line-length = 119
