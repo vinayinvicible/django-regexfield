@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
-from fabric.api import task, local
+from fabric.api import local, task
 
 
 @task

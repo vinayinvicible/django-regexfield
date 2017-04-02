@@ -7,3 +7,11 @@
     -   id: check-yaml
     -   id: debug-statements
     -   id: flake8
+-   repo: local
+    hooks:
+    -   id: isort
+        name: Sorting Imports
+        entry: isort
+        language: system
+        args: ["-y"]
+        files: \.py$

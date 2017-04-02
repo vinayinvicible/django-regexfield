@@ -2,24 +2,41 @@ sudo: false
 language: python
 
 python:
-  - 3.5
+  - 2.7
+  - 3.6
 
 env:
-  - TOX_ENV=py27-django18
-  - TOX_ENV=py35-django18
-  - TOX_ENV=py27-django19
-  - TOX_ENV=py35-django19
-  - TOX_ENV=py27-django110
-  - TOX_ENV=py35-django110
+  - DJANGO_VERSION=18 DB=mysql
+  - DJANGO_VERSION=19 DB=mysql
+  - DJANGO_VERSION=110 DB=mysql
+  - DJANGO_VERSION=111 DB=mysql
+  - DJANGO_VERSION=18 DB=psql
+  - DJANGO_VERSION=19 DB=psql
+  - DJANGO_VERSION=110 DB=psql
+  - DJANGO_VERSION=111 DB=psql
+  - DJANGO_VERSION=18 DB=sqlite
+  - DJANGO_VERSION=19 DB=sqlite
+  - DJANGO_VERSION=110 DB=sqlite
+  - DJANGO_VERSION=111 DB=sqlite
+  - TOXENV=pre_commit
+
+services:
+  - mysql
+  - postgresql
 
 before_install:
+  - if [[ -z $TOXENV ]]; then export TOXENV=py${TRAVIS_PYTHON_VERSION}-django${DJANGO_VERSION}-${DB}; fi
   - pip install codecov
 
 install:
   - pip install tox
 
-after_success:
-  - codecov
+before_script:
+  - mysql -e 'CREATE DATABASE regexfield;' -u root
+  - psql -c 'CREATE DATABASE regexfield;' -U postgres
 
 script:
-  - tox -e $TOX_ENV
+  - tox
+
+after_success:
+  - if [[ -n $DJANGO_VERSION ]]; then codecov; fi;

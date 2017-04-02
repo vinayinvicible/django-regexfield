@@ -1,8 +1,7 @@
 from distutils.core import setup
 
-from setuptools import find_packages
-
 import regexfield
+from setuptools import find_packages
 
 try:
     with open('README.rst') as readme:
