@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'regexfield',
+    'tests',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -67,13 +68,31 @@ TEMPLATES = [
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
+database_vendor = os.environ.get('DB', 'sqlite')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if database_vendor == 'psql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'regexfield',
+            'USER': 'postgres',
+        }
     }
-}
+elif database_vendor == 'mysql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'regexfield',
+            'USER': 'root',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation
@@ -114,33 +133,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': (
-#                 '%(levelname)s %(asctime)s %(funcName)s %(pathname)s '
-#                 '%(message)s %(name)s'
-#             )
-#         },
-#     },
-#     'handlers': {
-#         'null': {
-#             'level': 'DEBUG',
-#             'class': 'logging.NullHandler',
-#         },
-#         'console': {
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose'
-#         },
-#     },
-#     'loggers': {
-#         'django.db': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': False,
-#         },
-#     }
-# }
+try:
+    from .local_settings import *  # noqa
+except ImportError:
+    pass
